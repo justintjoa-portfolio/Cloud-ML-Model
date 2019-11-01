@@ -18,31 +18,34 @@ beginsonspring = 0
 
 class period:
   
-  def _init_(self, name):
+  def __init__(self, name):
     self.name = name
     self.model = ""
 
   def set_model(self, newmodel):
     self.model = newmodel
 
+  def print_model(self):
+    print(self.model)
+
   def calculatealpha(self, time, totaltransactionsinperiod):
     if (self.model == 'euler1'):
-      numerator = exp(-2*time)
+      numerator = math.exp(-2*time)
       denominator = 1
       for i in range(1,totaltransactionsinperiod+1):
-        denominator = denominator + exp(-2*i)
+        denominator = denominator + math.exp(-2*i)
       return numerator/denominator
     if (self.model == 'euler2'):
-      numerator = exp(-time)
+      numerator = math.exp(-time)
       denominator = 1
       for i in range(1,totaltransactionsinperiod+1):
-        denominator = denominator + exp(-i)
+        denominator = denominator + math.exp(-i)
       return numerator/denominator
     if (self.model == 'euler3'):
       numerator = exp(-time/5)
       denominator = 1
       for i in range(1,totaltransactionsinperiod+1):
-        denominator = denominator + exp(-i/5)
+        denominator = denominator + math.exp(-i/5)
       return numerator/denominator
     if (self.model == 'exponential1'):
       numerator = (time)**(-2)
@@ -85,7 +88,7 @@ class period:
       divisor = 1
       if (self.model == 'euler1'):
         for i in range(sizeofarray-1, start-1, -1):
-          value = (inputarray[i][1])*(exp(-2*(counter)))
+          value = (inputarray[i][1])*(math.exp(-2*(counter)))
           weighedaverage = weighedaverage + value
           counter += 1
         counter+=1
@@ -94,7 +97,7 @@ class period:
         return (weighedaverage/divisor)
       if (self.model == 'euler2'):
         for i in range(sizeofarray-1, start-1, -1):
-          value = (inputarray[i][1])*(exp(-(counter)))
+          value = (inputarray[i][1])*(math.exp(-(counter)))
           weighedaverage = weighedaverage + value
           counter += 1
         counter+=1
@@ -103,7 +106,7 @@ class period:
         return (weighedaverage/divisor)
       if (self.model == 'euler3'):
         for i in range(sizeofarray-1, start-1, -1):
-          value = (inputarray[i][1])*(exp(-(counter)/5))
+          value = (inputarray[i][1])*(math.exp(-(counter)/5))
           weighedaverage = weighedaverage + value
           counter += 1
         counter+=1
@@ -156,50 +159,52 @@ class period:
 
 
 def decidemodel(period, inputarray, sizeofarray):
+  print("welcome")
   trainingsize = math.floor(3/4*(sizeofarray))
   testingsize = sizeofarray - trainingsize
   testingav = 0
-  euler1av = inputarray[trainingsize-1]
-  euler2av = inputarray[trainingsize-1]
-  euler3av = inputarray[trainingsize-1]
-  exponential1av = inputarray[trainingsize-1]
-  exponential2av = inputarray[trainingsize-1]
-  exponential3av = inputarray[trainingsize-1]
-  constantav = inputarray[trainingsize-1]
-  fractionalav = inputarray[trainingsize-1]
+  euler1av = inputarray[trainingsize-1][1]
+  euler2av = inputarray[trainingsize-1][1]
+  euler3av = inputarray[trainingsize-1][1]
+  exponential1av = inputarray[trainingsize-1][1]
+  exponential2av = inputarray[trainingsize-1][1]
+  exponential3av = inputarray[trainingsize-1][1]
+  constantav = inputarray[trainingsize-1][1]
+  fractionalav = inputarray[trainingsize-1][1]
   testingaverages = []
   counter = 1
-  for i in range(trainingsize, sizeofarray-1):
+  for i in range(trainingsize, sizeofarray):
     value = (inputarray[i][1])
     testingav = testingav + value
+  print(testingav)
   counter = 1;
   for i in range(trainingsize-2, -1, -1):
-    value = (inputarray[i][1])*(exp(-2(counter)))
+    value = (inputarray[i][1])*(math.exp(-2*(counter)))
     euler1av = euler1av + value
     counter += 1
   divisor = 1
-  for i in range (1, counter+1):
-    divisor = divisor + (exp(-2(i)))
+  for i in range (1, counter):
+    divisor = divisor + (math.exp(-2*(i)))
   euler1av = euler1av/divisor
   testingaverages.append(euler1av)
   counter = 1
   divisor = 1
   for i in range(trainingsize-2, -1, -1):
-    value = (inputarray[i][1])*(exp(-(counter)))
+    value = (inputarray[i][1])*(math.exp(-(counter)))
     euler2av = euler2av + value
     counter += 1
-  for i in range (1, counter+1):
-    divisor = divisor + (exp(-(i)))
+  for i in range (1, counter):
+    divisor = divisor + (math.exp(-(i)))
   euler2av = euler2av/divisor
   testingaverages.append(euler2av)
   counter = 1
   divisor = 1
   for i in range(trainingsize-2, -1, -1):
-    value = (inputarray[i][1])*(exp(-(counter)/5))
+    value = (inputarray[i][1])*(math.exp(-(counter)/5))
     euler3av = euler3av + value
     counter += 1
-  for i in range (1, counter+1):
-    divisor = divisor + (exp(-(i/5)))
+  for i in range (1, counter):
+    divisor = divisor + (math.exp(-(i/5)))
   euler3av = euler3av/divisor
   testingaverages.append(euler3av)
   counter = 1
@@ -208,9 +213,9 @@ def decidemodel(period, inputarray, sizeofarray):
     value = (inputarray[i][1])*((counter)**(-2))
     exponential1av = exponential1av + value
     counter += 1
-  for i in range (1, counter+1):
+  for i in range (1, counter):
     divisor = divisor + (i**(-2))
-  exponential1av = exponentialav/divisor
+  exponential1av = exponential1av/divisor
   testingaverages.append(exponential1av)
   counter = 1;
   divisor = 1
@@ -218,9 +223,9 @@ def decidemodel(period, inputarray, sizeofarray):
     value = (inputarray[i][1])*((counter)**-1.5)
     exponential2av = exponential2av + value
     counter += 1
-  for i in range (1, counter+1):
+  for i in range (1, counter):
     divisor = divisor + (i**(-1.5))
-  exponential2av = exponentia2av/divisor
+  exponential2av = exponential2av/divisor
   testingaverages.append(exponential2av)
   counter = 1
   divisor = 1
@@ -228,7 +233,7 @@ def decidemodel(period, inputarray, sizeofarray):
     value = (inputarray[i][1])*((counter)**-1.1)
     exponential3av = exponential3av + value
     counter += 1
-  for i in range (1, counter+1):
+  for i in range (1, counter):
     divisor = divisor + (i**(-1.1))
   exponential3av = exponential3av/divisor
   testingaverages.append(exponential3av)
@@ -237,6 +242,8 @@ def decidemodel(period, inputarray, sizeofarray):
   for i in range(trainingsize-2, -1, -1):
     value = (inputarray[i][1])
     constantav = constantav + value
+    counter+=1
+  constantav = constantav/(counter)
   testingaverages.append(constantav)
   counter = 1
   divisor = 1
@@ -244,36 +251,40 @@ def decidemodel(period, inputarray, sizeofarray):
     value = (inputarray[i][1])*(1/((counter)+1))
     fractionalav = fractionalav + value
     counter += 1
-  for i in range (1, counter+1):
+  for i in range (1, counter):
     divisor = divisor + (1/(i+1))
-  fractionalv = fractionalav/divisor
+  fractionalav = fractionalav/divisor
   testingaverages.append(fractionalav)
-  testingarray = numpy.array(testingaverages)
+  testingarray = np.array(testingaverages)
   minimumdiff = abs(testingarray[0] - testingav)
   closestvalue = testingarray[0]
   indexofchoice = 0
-  for i in range(1,7):
-    if (abs(testingarray[i] - testingav) < minimumdiff):
+  for i in range(0,8):
+    print('res')
+    print(testingarray[i]-testingav)
+    if ((abs(testingarray[i] - testingav)) < minimumdiff):
       minimumdiff = abs(testingarray[i] - testingav)
       indexofchoice = i
+      continue
     if ((abs(testingarray[i] - testingav) == minimumdiff) and (testingarray[i] > closestvalue)):
       closestvalue = testingarray[i]
       indexofchoice = i
-  if (i == 0):
+      continue
+  if (indexofchoice == 0):
     period.set_model('euler1')
-  if (i == 1):
+  if (indexofchoice == 1):
     period.set_model('euler2')
-  if (i == 2):
+  if (indexofchoice == 2):
     period.set_model('euler3')
-  if (i == 3):
+  if (indexofchoice == 3):
     period.set_model('exponential1')
-  if (i == 4):
+  if (indexofchoice == 4):
     period.set_model('exponential2')
-  if (i == 5):
+  if (indexofchoice == 5):
     period.set_model('exponential3')
-  if (i == 6):
+  if (indexofchoice == 6):
     period.set_model('constant')
-  if (i == 7):
+  if (indexofchoice == 7):
     period.set_model('fractional')
 
 
@@ -294,14 +305,17 @@ ytynumberdays = 0
 ntynumberdays = 0
 totaltransactions = 0
 dayindexes = []
+moneyindexes = []
 with tf.compat.v1.Session() as sess:
-  y_data = [5, 9, 10, 14, 18, 20, -1]
-  x_data = [10, 20, 30, 40, 50, 70, -1]
+  y_data = [5, 9, 10, 14, 18, 20, 80, 130, 180, 220, 270, 310, 350, 500, -1]
+  x_data = [10, 20, 30, 40, 50, 70, 20, 150, 170, 230, 250, 40, 5, 2, -1]
   result = sess.run(y, feed_dict={y: y_data})
   dayindexes = result
+  result = sess.run(x, feed_dict={x: x_data})
+  moneyindexes = result
 
 print(dayindexes)
-
+print(moneyindexes)
 for i in range(0, max_size):
     currentday = dayindexes[i]
     if (currentday < 0):
@@ -327,51 +341,73 @@ for i in range(0, max_size):
       continue
 
 totalnumberyears = math.floor((dayindexes[(totaltransactions-1)])/365)
-
 z = tf.compat.v1.placeholder(tf.float32, name="markovchain")
 z = [[yestoyes/ytynumberdays, notoyes/ntynumberdays],[(1-yestoyes/ytynumberdays), (1-notoyes/ntynumberdays)]]
-h = tf.placeholder(tf.float32, name="initialstate")
 secondindex = 1
-if (soldonfirstday == 0)
-	secondindex = 1
-if (soldonfirstday == 1)
-	secondindex = 0
+soldonfirstday = 0
+if (dayindexes[0] == 1):
+  soldonfirstday = 1
+  secondindex = 0
+if (dayindexes[0] != 1):
+  secondindex = 1
 h = [soldonfirstday, secondindex]
 fallcount = 0
 wintercount = 0
 springcount = 0
-fallcount = 0
+summercount = 0
 fallperiod = [[]]
 winterperiod = [[]]
 springperiod = [[]]
 summerperiod = [[]]
 for i in range(0,totaltransactions):
-	currentday = y[:, i, :]
-	if (((currentday%366) <= 78) or ((currentday%366) > 356)):
-		winterperiod.append(currentday, x[:, i, :])
+  currentday = dayindexes[i]
+  if (((currentday%366) <= 78) or ((currentday%366) > 356)):
+    winterperiod[-1].append(currentday)
+    winterperiod[-1].append(moneyindexes[i])
+    winterperiod.append([])
     if (i == 0):
       beginsonwinter = 1
-		wintercount+=1
-	if (((currentday%366) > 78) and ((currentday%366) <= 171)) :
-		springperiod.append(currentday, x[:, i, :])
+    wintercount+=1
+  if (((currentday%366) > 78) and ((currentday%366) <= 171)):
+    springperiod[-1].append(currentday)
+    springperiod[-1].append(moneyindexes[i])
+    springperiod.append([])
     if (i == 0):
       beginsonspring = 1
-		springcount+=1
-	if (((currentday%366) > 171) and ((currentday%366) <= 265)) :
-		summerperiod.append(currentday, x[:, i, :])
+    springcount+=1
+  if (((currentday%366) > 171) and ((currentday%366) <= 265)) :
+    summerperiod[-1].append(currentday)
+    summerperiod[-1].append(moneyindexes[i])
+    summerperiod.append([])
     if (i == 0):
       beginsonsummer = 1
-		summercount+=1
-	if (((currentday%366) > 265) and ((currentday%366) <= 356)):
-		fallperiod.append(currentday, x[:, i, :])
+    summercount+=1
+  if (((currentday%366) > 265) and ((currentday%366) <= 356)):
+    fallperiod[-1].append(currentday)
+    fallperiod[-1].append(moneyindexes[i])
+    fallperiod.append([])
     if (i == 0):
       beginsonfall = 1
-		fallcount+=1
-	continue
-fallarray = numpy.array(fallperiod)
-winterarray = numpy.array(winterperiod)
-springarray = numpy.array(springperiod)
-summerarray = numpy.array(summerperiod)
+    fallcount+=1
+  continue
+del fallperiod[-1]
+del winterperiod[-1]
+del springperiod[-1]
+del summerperiod[-1]
+fallarray = np.array(fallperiod)
+winterarray = np.array(winterperiod)
+springarray = np.array(springperiod)
+summerarray = np.array(summerperiod)
+print("fall")
+print(fallarray)
+print("winter")
+print(winterarray)
+print("spring")
+print(springarray)
+print("summer")
+print(summerarray)
+print('initial')
+print(summerarray[0])
 fall = period('fall')
 winter = period('winter')
 spring = period('spring')
@@ -380,6 +416,12 @@ decidemodel(fall, fallarray, fallcount)
 decidemodel(winter, winterarray, wintercount)
 decidemodel(spring, springarray, springcount)
 decidemodel(summer, summerarray, summercount)
+fall.print_model()
+winter.print_model()
+spring.print_model()
+summer.print_model()
+
+#october 31
 
 initialtrend = 0
 marker = 0
